@@ -7,7 +7,7 @@ Este projeto demonstra como utilizar o Docker Compose para subir containers Node
 **Requisitos:**
 
 * Docker instalado e configurado
-* Node.js instalado
+* Node.js instalado (Nesse projeto estou utilizando a versão 21.7.1)
 * npm instalado
 
 **Como usar:**
