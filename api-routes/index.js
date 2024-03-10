@@ -1,20 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { listarCategorias, cadastrarCategoria, editarCategoria, excluirCategoria } = require('../controllers/categoriaController');
-const { listarProdutos, listarProdutoPorId, cadastrarProduto, editarProduto, excluirProduto } = require('../controllers/produtoController');
+const CategoriaRouter = require('./CategoriaRouter');
+const ProdutoRouter = require('./ProdutoRouter');
 
-// Rotas para categorias
-router.get('/categorias', listarCategorias);
-router.post('/categorias', cadastrarCategoria);
-router.put('/categorias/:id', editarCategoria);
-router.delete('/categorias/:id', excluirCategoria);
+const CategoriaController = require('../controllers/CategoriaController');
+const ProdutoController = require('../controllers/ProdutoController');
 
-// Rotas para produtos
-router.get('/produtos', listarProdutos);
-router.get('/produtos/:id', listarProdutoPorId);
-router.post('/produtos', cadastrarProduto);
-router.put('/produtos/:id', editarProduto);
-router.delete('/produtos/:id', excluirProduto);
+const categoriaRouter = new CategoriaRouter(new CategoriaController);
+const produtoRouter = new ProdutoRouter(new ProdutoController);
+
+categoriaRouter.register(router);
+produtoRouter.register(router);
 
 module.exports = router;
