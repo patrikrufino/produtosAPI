@@ -31,7 +31,7 @@ class ProdutoService {
       if (mesmaCategoria) {
         throw new Error('Já existe um produto com este nome nesta categoria');
       }
-      console.log(mesmaCategoria)
+  
     }
 
     // Verificar se a categoria existe
@@ -40,7 +40,8 @@ class ProdutoService {
       where: { id: produto.categoria_id },
     });
 
-    if (categoria) {
+  
+    if (!categoria) {
       throw new Error('Categoria não encontrada.');
     }
 
@@ -70,26 +71,35 @@ class ProdutoService {
 
   async editar(id, produto) {
     const nomeMinusculo = produto.nome.toLowerCase();
-
+    
     // Validação para evitar produtos duplicados
-
+    
     const produtoExistente = await this.prisma.produto.findFirst({
-      where: {
-        AND: [
-          { id: { not: { equals: id } } },
-          { nome: { equals: nomeMinusculo } },
-        ],
-      },
+      where: { nome: { equals: nomeMinusculo } },
+    });
+    
+    console.log(produtoExistente)
+    if (produtoExistente) {
+      const mesmaCategoria = produtoExistente.categoria_id === produto.categoria_id;
+
+      if (mesmaCategoria) {
+        throw new Error('Já existe um produto com este nome nesta categoria');
+      }
+  
+    }
+
+    const categoria = await this.prisma.categoria.findFirst({
+      where: { id: produto.categoria_id },
     });
 
-    if (produtoExistente) {
-      throw new Error('Já existe um produto com este nome.');
+    if (!categoria) {
+      throw new Error('Categoria não encontrada.');
     }
 
     await this.prisma.produto.update({
       where: { id },
       data: {
-        nome: produto.nome,
+        nome: produto.nome.toLowerCase(),
         descricao: produto.descricao,
         categoria_id: produto.categoria_id,
       },
