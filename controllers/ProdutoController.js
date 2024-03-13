@@ -24,24 +24,32 @@ class ProdutoController {
   }
 
   async cadastrarProduto(req, res) {
-    try {
-      const produto = req.body;
-      produto.categoria_id = parseInt(produto.categoria_id);
-      await produtoService.cadastrar(produto);
-      res.json({ message: 'Produto cadastrado com sucesso!' });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+    if(Object.keys(req.body).length > 0) {
+      try {
+        const produto = req.body;
+        produto.categoria_id = parseInt(produto.categoria_id);
+        await produtoService.cadastrar(produto);
+        res.json({ message: 'Produto cadastrado com sucesso!' });
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    } else {
+      res.status(400).json({error: "Não foi possivel realizar sua solicitação, faça uma requisição com um corpo."})
     }
   }
 
   async editarProduto(req, res) {
-    try {
-      const id = req.params.id;
-      const produto = req.body;
-      await produtoService.editar(parseInt(id), produto);
-      res.json({ message: 'Produto editado com sucesso!' });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+    if(Object.keys(req.body).length > 0) {
+      try {
+        const id = req.params.id;
+        const produto = req.body;
+        await produtoService.editar(parseInt(id), produto);
+        res.json({ message: 'Produto editado com sucesso!' });
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    } else {
+      res.status(400).json({error: "Não foi possivel realizar sua solicitação, faça uma requisição com um corpo."})
     }
   }
 

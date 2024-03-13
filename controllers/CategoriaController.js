@@ -12,23 +12,34 @@ class CategoriaController {
   }
 
   async cadastrarCategoria(req, res) {
-    try {
-      const categoria = req.body;
-      await categoriaService.cadastrar(categoria);
-      res.json({ message: 'Categoria cadastrada com sucesso!' });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+    if(Object.keys(req.body).length > 0) {
+      try {
+        const categoria = req.body;
+        await categoriaService.cadastrar(categoria);
+        res.json({ message: 'Categoria cadastrada com sucesso!' });
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    } else {
+      res.status(400).json({ "error": "Não foi possivel realizar sua solicitação, faça uma requisição com um corpo." });
     }
+    
+    
   }
 
   async editarCategoria(req, res) {
-    try {
-      const id = req.params.id;
-      const categoria = req.body;
-      await categoriaService.editar(parseInt(id), categoria);
-      res.json({ message: 'Categoria editada com sucesso!' });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+
+    if(Object.keys(req.body).length > 0) {
+      try {
+        const id = req.params.id;
+        const categoria = req.body;
+        await categoriaService.editar(parseInt(id), categoria);
+        res.json({ message: 'Categoria editada com sucesso!' });
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+      }
+    } else {
+      res.status(400).json({error: "Não foi possivel realizar sua solicitação, faça uma requisição com um corpo."})
     }
   }
 
