@@ -31,7 +31,6 @@ npm install
 ```
 
 4. Edite o arquivo `docker-compose.yml` se necessário (por exemplo, portas, volumes).
-
 5. Suba os containers:
 
 ```
@@ -39,7 +38,6 @@ docker-compose up
 ```
 
 6. Aguarde a inicialização dos containers (pode levar alguns segundos).
-
 7. Acesse o serviço Node.js na URL configurada no `docker-compose.yml` (geralmente localhost:3000).
 
 **Observações:**
@@ -47,9 +45,27 @@ docker-compose up
 * O container Prisma é configurado para usar o banco de dados Postgress atravas de uma imagem do docker.
 * O container Node.js usa o Prisma Client para se conectar ao banco de dados.
 * Existe um script para rodar em modo de desenvolvimento
+
+8. Rode os comandos do PRISMA
+
 ```
+npx prisma validade
+```
+
+```
+npx prisma generate
+```
+
+```
+npx prisma migrate dev
+```
+
+9. Rode o script
+
+````
 npm run dev
-```
+````
+
 * Não foi pensado para produção
 
 **Recursos:**
@@ -75,21 +91,25 @@ As rotas estão divididas em duas classes:
 - **api-routes/CategoriaRouter.js**
 - **api-routes/ProdutoRouter.js**
 
-
-
 ## Produtos
 
 ### Todos os produtos:
+
 ```bash
 curl http://localhost:3000/api/produtos
 ```
+
 ### Produto especifico:
+
 ```bash
 curl http://localhost:3000/api/produtos/1
 ```
+
 ## Categorias
 
 ### Todas as categorias:
+
 ```bash
 curl http://localhost:3000/api/categorias
 ```
+

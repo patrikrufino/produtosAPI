@@ -14,7 +14,6 @@ class CategoriaController {
   async cadastrarCategoria(req, res) {
     try {
       const categoria = req.body;
-      console.log(req.body);
       await categoriaService.cadastrar(categoria);
       res.json({ message: 'Categoria cadastrada com sucesso!' });
     } catch (error) {
