@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 
 app.use(express.json());
 
+// Aceita URLENCODED
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // Importa as rotas da API
 const apiRoutes = require('./api-routes/index');
 

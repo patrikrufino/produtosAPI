@@ -26,6 +26,7 @@ class ProdutoController {
   async cadastrarProduto(req, res) {
     try {
       const produto = req.body;
+      produto.categoria_id = parseInt(produto.categoria_id);
       await produtoService.cadastrar(produto);
       res.json({ message: 'Produto cadastrado com sucesso!' });
     } catch (error) {
