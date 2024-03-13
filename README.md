@@ -64,6 +64,7 @@ npx prisma migrate dev
 
 ````
 npm run dev
+* [ ] ````
 ````
 
 * Não foi pensado para produção
