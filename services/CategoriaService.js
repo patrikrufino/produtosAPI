@@ -1,4 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
+const StringUtils = require("../utils/StringUtils");
+const utils = new StringUtils();
 
 class CategoriaService {
   constructor() {
@@ -11,17 +13,17 @@ class CategoriaService {
   }
 
   async cadastrar(categoria) {
-    const nomeMinusculo = categoria.nome.toLowerCase();
-
+    const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
+  
     // Validação para evitar categorias duplicadas
     const categoriaExistente = await this.prisma.categoria.findFirst({
-      where: { nome: { equals: nomeMinusculo } },
+      where: { nome: { equals: nomeNormalizado } },
     });
-
+  
     if (categoriaExistente) {
       throw new Error('Já existe uma categoria com este nome.');
     }
-
+  
     await this.prisma.categoria.create({
       data: {
         nome: categoria.nome,
@@ -30,14 +32,14 @@ class CategoriaService {
   }
 
   async editar(id, categoria) {
-    const nomeMinusculo = categoria.nome.toLowerCase();
+    const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
 
     // Validação para evitar categorias duplicadas
     const categoriaExistente = await this.prisma.categoria.findFirst({
       where: {
         AND: [
           { id: { not: { equals: id } } },
-          { nome: { equals: nomeMinusculo } },
+          { nome: { equals: nomeNormalizado } },
         ],
       },
     });

@@ -1,4 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
+const StringUtils = require("../utils/StringUtils");
+const utils = new StringUtils();
 
 class ProdutoService {
   constructor() {
@@ -18,15 +20,15 @@ class ProdutoService {
   }
 
   async cadastrar(produto) {
-    const nomeMinusculo = produto.nome.toLowerCase();
-
+    const nomeNormalizado = utils.removerAcentos(produto.nome).toLowerCase();
+    
     // Validação para evitar produtos duplicados
     const produtoExistente = await this.prisma.produto.findFirst({
-      where: { nome: { equals: nomeMinusculo } },
+      where: { nome: { equals: nomeNormalizado } },
     });
 
     if (produtoExistente) {
-      const mesmaCategoria = produtoExistente.categoria_id === produto.categoria_id;
+      const mesmaCategoria = produtoExistente.categoria_id == produto.categoria_id;
 
       if (mesmaCategoria) {
         throw new Error('Já existe um produto com este nome nesta categoria');
@@ -70,12 +72,12 @@ class ProdutoService {
   }
 
   async editar(id, produto) {
-    const nomeMinusculo = produto.nome.toLowerCase();
+    const nomeNormalizado = utils.removerAcentos(produto.nome).toLowerCase();
     
     // Validação para evitar produtos duplicados
     
     const produtoExistente = await this.prisma.produto.findFirst({
-      where: { nome: { equals: nomeMinusculo } },
+      where: { nome: { equals: nomeNormalizado } },
     });
     
     console.log(produtoExistente)
