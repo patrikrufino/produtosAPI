@@ -30,51 +30,55 @@ class ProdutoService {
   }
 
   async cadastrar(produto) {
-    const nomeNormalizado = utils.normalizaString(categoria.nome).toLowerCase();
+    try {
+        const nomeNormalizado = utils.normalizaString(produto.nome).toLowerCase();
+        
+        const produtoExistente = await this.prisma.produto.findFirst({
+          where: {
+            AND: [
+              { nome: { equals: nomeNormalizado } },
+              { categoria_id: { equals: produto.categoria_id } },
+            ],
+          },
+        });
 
-    const produtoExistente = await this.prisma.produto.findFirst({
-      where: {
-        AND: [
-          { nome: { equals: nomeNormalizado } },
-          { categoria_id: { equals: produto.categoria_id } },
-        ],
-      },
-    });
+      if (produtoExistente) {
+        throw new Error('Já existe um produto com este nome nesta categoria');
+      }
 
-    if (produtoExistente) {
-      throw new Error('Já existe um produto com este nome nesta categoria');
-    }
-
-    const categoria = await this.prisma.categoria.findFirst({
-      where: { id: produto.categoria_id },
-    });
-
-
-    if (!categoria) {
-      throw new Error('Categoria não encontrada.');
-    }
-
-    const novoProduto = await this.prisma.produto.create({
-      data: {
-        nome: nomeNormalizado,
-        descricao: produto.descricao,
-        categoria_id: produto.categoria_id,
-      },
-    });
-
-    await this.prisma.categoria.update({
-      where: { id: produto.categoria_id },
-      data: {
-        produtos: {
-          connect: {
-            id: novoProduto.id,
+      const categoria = await this.prisma.categoria.findFirst({
+        where: { id: produto.categoria_id },
+      });
+      
+      
+      if (!categoria) {
+        throw new Error('Categoria não encontrada.');
+      }
+      
+      const novoProduto = await this.prisma.produto.create({
+        data: {
+          nome: nomeNormalizado,
+          descricao: produto.descricao,
+          categoria_id: produto.categoria_id,
+        },
+      });
+      
+      await this.prisma.categoria.update({
+        where: { id: produto.categoria_id },
+        data: {
+          produtos: {
+            connect: {
+              id: novoProduto.id,
+            },
           },
         },
-      },
-    });
-
-    return novoProduto;
+      });
+      
+      return novoProduto;
+  } catch (error) {
+    throw new Error('Erro ao cadastrar categoria: ' + error.message);
   }
+}
 
   async editar(id, produto) {
     try {
