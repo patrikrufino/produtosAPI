@@ -26,7 +26,7 @@ class CategoriaService {
   
     await this.prisma.categoria.create({
       data: {
-        nome: categoria.nome,
+        nome: nomeNormalizado,
       },
     });
   }
@@ -51,7 +51,7 @@ class CategoriaService {
     await this.prisma.categoria.update({
       where: { id },
       data: {
-        nome: categoria.nome,
+        nome: nomeNormalizado,
       },
     });
   }

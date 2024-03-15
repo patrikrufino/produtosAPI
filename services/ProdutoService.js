@@ -24,16 +24,16 @@ class ProdutoService {
     
     // Validação para evitar produtos duplicados
     const produtoExistente = await this.prisma.produto.findFirst({
-      where: { nome: { equals: nomeNormalizado } },
+      where: {
+        AND: [
+          { nome: { equals: nomeNormalizado } },
+          { categoria_id: { equals: produto.categoria_id } },
+        ],
+      },
     });
 
     if (produtoExistente) {
-      const mesmaCategoria = produtoExistente.categoria_id == produto.categoria_id;
-
-      if (mesmaCategoria) {
-        throw new Error('Já existe um produto com este nome nesta categoria');
-      }
-  
+      throw new Error('Já existe um produto com este nome nesta categoria');  
     }
 
     // Verificar se a categoria existe
@@ -51,7 +51,7 @@ class ProdutoService {
 
     const novoProduto = await this.prisma.produto.create({
       data: {
-        nome: produto.nome.toLowerCase(),
+        nome: nomeNormalizado,
         descricao: produto.descricao,
         categoria_id: produto.categoria_id,
       },
