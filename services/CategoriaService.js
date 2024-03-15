@@ -8,56 +8,80 @@ class CategoriaService {
   }
 
   async listar() {
-    const categorias = await this.prisma.categoria.findMany();
-    return categorias;
+    try {
+      const categorias = await this.prisma.categoria.findMany();
+      return categorias;
+    } catch (error) {
+      console.error(error);
+      return { error: 'Erro ao listar categorias.' };
+    }
   }
 
   async cadastrar(categoria) {
-    const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
-  
-    // Validação para evitar categorias duplicadas
-    const categoriaExistente = await this.prisma.categoria.findFirst({
-      where: { nome: { equals: nomeNormalizado } },
-    });
-  
-    if (categoriaExistente) {
-      throw new Error('Já existe uma categoria com este nome.');
+    try {
+      const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
+
+      const categoriaExistente = await this.prisma.categoria.findFirst({
+        where: { nome: { equals: nomeNormalizado } },
+      });
+
+      if (categoriaExistente) {
+        throw new Error('Já existe uma categoria com este nome.');
+      }
+
+      const novaCategoria = await this.prisma.categoria.create({
+        data: {
+          nome: nomeNormalizado,
+        },
+      });
+
+      return novaCategoria;
+    } catch (error) {
+      throw new Error('Erro ao cadastrar categoria: ' + error.message);
     }
-  
-    await this.prisma.categoria.create({
-      data: {
-        nome: nomeNormalizado,
-      },
-    });
   }
 
   async editar(id, categoria) {
-    const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
-
-    // Validação para evitar categorias duplicadas
-    const categoriaExistente = await this.prisma.categoria.findFirst({
-      where: {
-        AND: [
-          { id: { not: { equals: id } } },
-          { nome: { equals: nomeNormalizado } },
-        ],
-      },
-    });
-
-    if (categoriaExistente) {
-      throw new Error('Já existe uma categoria com este nome.');
+    try {
+      const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
+  
+      const categoriaExistente = await this.prisma.categoria.findFirst({
+        where: {
+          AND: [
+            { id: { not: { equals: id } } },
+            { nome: { equals: nomeNormalizado } },
+          ],
+        },
+      });
+  
+      if (categoriaExistente) {
+        throw new Error('Já existe uma categoria com este nome.');
+      }
+  
+      await this.prisma.categoria.update({
+        where: { id },
+        data: {
+          nome: nomeNormalizado,
+        },
+      });
+  
+      const categoriaAtualizada = await this.prisma.categoria.findUnique({
+        where: { id },
+      });
+  
+      return categoriaAtualizada;
+    } catch (error) {
+      throw new Error('Erro ao editar categoria: ' + error.message);
     }
-
-    await this.prisma.categoria.update({
-      where: { id },
-      data: {
-        nome: nomeNormalizado,
-      },
-    });
-  }
+  }  
 
   async excluir(id) {
-    await this.prisma.categoria.delete({ where: { id } });
+    try {
+      await this.prisma.categoria.delete({ where: { id } });
+      return { message: 'Categoria excluída com sucesso.' };
+    } catch (error) {
+      throw new Error('Erro ao excluir categoria: ' + error.message);
+    }
   }
 }
 
