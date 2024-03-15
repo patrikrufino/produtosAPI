@@ -19,7 +19,7 @@ class CategoriaService {
 
   async cadastrar(categoria) {
     try {
-      const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
+      const nomeNormalizado = utils.normalizaString(categoria.nome).toLowerCase();
 
       const categoriaExistente = await this.prisma.categoria.findFirst({
         where: { nome: { equals: nomeNormalizado } },
@@ -43,7 +43,7 @@ class CategoriaService {
 
   async editar(id, categoria) {
     try {
-      const nomeNormalizado = utils.removerAcentos(categoria.nome).toLowerCase();
+      const nomeNormalizado = utils.normalizaString(categoria.nome).toLowerCase();
   
       const categoriaExistente = await this.prisma.categoria.findFirst({
         where: {

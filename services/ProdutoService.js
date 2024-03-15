@@ -30,7 +30,7 @@ class ProdutoService {
   }
 
   async cadastrar(produto) {
-    const nomeNormalizado = utils.removerAcentos(produto.nome).toLowerCase();
+    const nomeNormalizado = utils.normalizaString(categoria.nome).toLowerCase();
 
     const produtoExistente = await this.prisma.produto.findFirst({
       where: {
@@ -78,7 +78,7 @@ class ProdutoService {
 
   async editar(id, produto) {
     try {
-      const nomeNormalizado = utils.removerAcentos(produto.nome).toLowerCase();
+      const nomeNormalizado = utils.normalizaString(categoria.nome).toLowerCase();
 
       const produtoExistente = await this.prisma.produto.findFirst({
         where: {
