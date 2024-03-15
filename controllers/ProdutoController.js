@@ -43,6 +43,7 @@ class ProdutoController {
       try {
         const id = req.params.id;
         const produto = req.body;
+        produto.categoria_id = parseInt(produto.categoria_id);
         await produtoService.editar(parseInt(id), produto);
         res.json({ message: 'Produto editado com sucesso!' });
       } catch (error) {
